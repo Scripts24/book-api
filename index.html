@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreeBookStore</title>
+  <!--Favicon-->
+  <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+  <!--Toastify-->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+  <!--RemixIcon-->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <!--Estilos personalizados-->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <header>
+    <span class="logo">📚 FreeBookStore</span>
+    <nav id="categorias">
+      <!-- Se generan dinámicamente -->
+    </nav>
+    <!-- Ícono  carrito -->
+    <button id="btnCarritoIcon" aria-label="Abrir carrito">
+      <i class="ri-handbag-line"></i> <span id="carrito-cuenta">0</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="section-cards">
+    <aside id="sidebar">
+      <h3>Filtrar por precio</h3>
+      <label>
+        Precio máx (ARS):
+        <input type="range" id="precioRange" min="0" max="100" value="100" step="1" />
+        <span id="precioValor">$100.000 ARS</span>
+      </label>
+      <button data-max="10">≤ $10.000</button>
+      <button data-max="25">≤ $25.000</button>
+      <button data-max="50">≤ $50.000</button>
+      <button data-max="100">Todos</button>
+    </aside>
+
+    <div id="catalogo"></div>
+  </section>
+
+    <!-- Modal del carrito -->
+    <dialog id="modalCarrito">
+      <h2>Tu carrito</h2>
+      <ul id="carrito-lista"></ul>
+      <p>Total: <strong id="modalTotal">0 €</strong></p>
+      <menu>
+        <button id="btnCerrarCarrito" type="button">Cerrar</button>
+        <button id="btnVaciarModal">Vaciar</button>
+        <button id="btnFinalizarModal">Finalizar compra</button>
+      </menu>
+    </dialog>
+
+    <!-- Modal de pago -->
+    <dialog id="modalPago">
+      <h2>Pago simulado</h2>
+      <form method="dialog">
+        <p>Total a pagar: <strong id="modalPagoTotal">$0 </strong></p>
+        <label>
+          Nombre en la tarjeta:
+          <input type="text" required placeholder="Ada Lovelace" />
+        </label>
+        <label>
+          Número de tarjeta:
+          <input type="text" pattern="\d{16}" required placeholder="1234567812345678" />
+        </label>
+        <menu>
+          <button value="cancel">Cancelar</button>
+          <button value="confirm">Pagar</button>
+        </menu>
+      </form>
+    </dialog>
+  </main>
+  <!--Toastify-->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!--Sweet Alert-->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!--Carrito-->
+  <script src="js/app.js"></script>
+  <!--Menú responsive-->
+  <script src="js/menu.js"></script>
+</body>
+
+</html>

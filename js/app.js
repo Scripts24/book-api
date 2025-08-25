@@ -1,0 +1,261 @@
+// ---------- CONFIG ----------
+const CATEGORIAS = {
+  Ficción: "fiction",
+  Ciencia: "science",
+  Programación: "programming",
+  Historia: "history",
+};
+
+const MAX_X_CAT = 40; // más libros
+const STEP = 4;
+const TIPO_CAMBIO = "blue";
+
+// ---------- ESTADO ----------
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let precioMax = 100000;
+let USD_TO_ARS = 1290;
+let allBooks = [];
+let visibleCount = STEP;
+
+// ---------- UTILS ----------
+const $ = (sel) => document.querySelector(sel);
+const guardar = () => localStorage.setItem("carrito", JSON.stringify(carrito));
+const totalARS = () =>
+  carrito.reduce((s, i) => s + (Number(i.precio.match(/\d+/)) || 0), 0);
+
+// ---------- COTIZACIÓN ----------
+async function getCotizacion() {
+  try {
+    const res = await fetch(`https://dolarapi.com/v1/dolares/${TIPO_CAMBIO}`);
+    USD_TO_ARS = (await res.json()).venta;
+  } catch {
+    console.warn("Cotización falló");
+  }
+}
+
+// ---------- UI ----------
+function refreshUI() {
+  $("#carrito-cuenta").textContent = carrito.length;
+  $("#modalTotal").textContent = $(
+    "#modalPagoTotal"
+  ).textContent = `$${totalARS().toFixed(0)} ARS`;
+}
+
+// ---------- CARRITO ----------
+function addCarrito(tit, pre) {
+  carrito.push({ titulo: tit, precio: pre });
+  refreshUI();
+  guardar();
+
+  Toastify({
+    text: "¡Producto agregado al carrito!",
+    duration: 3000,
+    gravity: "top",
+    position: "right",
+    style: {
+      background: "#0077ff",
+    },
+  }).showToast();
+}
+
+window.quitar = (idx) => {
+  carrito.splice(idx, 1);
+  refreshUI();
+  guardar();
+  openCarrito();
+  Toastify({
+    text: "¡Producto eliminado!",
+    duration: 3000,
+    gravity: "top",
+    position: "right",
+    style: {
+      background: "#0077ff",
+    },
+  }).showToast();
+};
+
+$("#btnVaciarModal").addEventListener("click", () => {
+  carrito = [];
+  refreshUI();
+  guardar();
+  closeModal("#modalCarrito");
+  Toastify({
+    text: "¡Tu carrito está vacío!",
+    duration: 3000,
+    gravity: "top",
+    position: "right",
+    style: {
+      background: "#0077ff",
+    },
+  }).showToast();
+});
+
+$("#btnFinalizarModal").addEventListener("click", () => {
+
+  refreshUI();
+  $("#modalPago").showModal();
+  closeModal("#modalCarrito");
+});
+
+// ---------- CERRAR MODALES ----------
+function closeModal(id) {
+  $(id).close();
+}
+
+function vaciarCarrito() {
+  carrito = [];
+  refreshUI();
+  guardar();
+}
+
+const btnPagar = document.querySelector("#modalPago [value='confirm']");
+btnPagar.addEventListener("click", () => {
+  Swal.fire({
+    icon: 'success',
+    title: '¡Compra Exitosa!',
+    text: 'En breve recibirá su pedido.',
+    showConfirmButton: false,
+    timer: 2500
+  });
+  // Después de mostrar el mensaje, vacía el carrito
+  vaciarCarrito();
+  // Cierra los modales
+  closeModal("#modalPago");
+  closeModal("#modalCarrito");
+
+});
+
+["#modalCarrito", "#modalPago"].forEach((id) => {
+  const btn = id === "#modalCarrito" ? "#btnCerrarCarrito" : "[value='cancel']";
+  $(btn).addEventListener("click", () => closeModal(id));
+  $(id).addEventListener("click", (e) => {
+    if (e.target === $(id)) closeModal(id);
+  });
+});
+
+// ---------- MODALES ----------
+function openCarrito() {
+  $("#carrito-lista").innerHTML = "";
+  carrito.forEach((it, idx) => {
+    const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.innerHTML = `
+      <span>${it.titulo} (${it.precio})</span>
+      <button onclick="quitar(${idx})"><i class="ri-delete-bin-6-line"></i></button>
+    `;
+    $("#carrito-lista").appendChild(li);
+  });
+  refreshUI();
+  $("#modalCarrito").showModal();
+}
+$("#btnCarritoIcon").addEventListener("click", openCarrito);
+
+// ---------- PAGINACIÓN ----------
+function renderBooks() {
+  $("#catalogo").innerHTML = "";
+  allBooks.slice(0, visibleCount).forEach((lib) => {
+    const card = document.createElement("article");
+    card.className = "libro";
+    card.innerHTML = `
+      <img src="${lib.img}" alt="${lib.tit}">
+      <div class="libro-info">
+        <h3>${lib.tit}</h3>
+        <p>${lib.aut}</p>
+        <div class="libro-actions">
+            <p class="precio">${lib.pre}</p>
+            <button onclick="addCarrito('${lib.tit}', '${lib.pre}')"><i class="ri-handbag-line"></i></button>
+        </div>
+      </div>
+    `;
+    $("#catalogo").appendChild(card);
+  });
+  $("#btnMore").style.display =
+    visibleCount >= allBooks.length ? "none" : "block";
+}
+
+function loadMore() {
+  visibleCount += STEP;
+  renderBooks();
+  filtrar();
+}
+
+// ---------- FILTRAR ----------
+
+$("#precioRange").addEventListener("input", (e) => {
+  precioMax = Number(e.target.value) * 1000;
+  $("#precioValor").textContent = `$${precioMax} ARS`;
+  filtrar();
+});
+
+document.querySelectorAll("#sidebar button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    precioMax = Number(btn.dataset.max) * 1000;
+    $("#precioRange").value = precioMax / 1000;
+    $("#precioValor").textContent = `$${precioMax} ARS`;
+    filtrar();
+  });
+});
+
+function filtrar() {
+  document.querySelectorAll(".libro").forEach((card) => {
+    const precio =
+      Number(card.querySelector(".precio").textContent.match(/\d+/)) || 0;
+    card.style.display = precio <= precioMax ? "" : "none";
+  });
+}
+
+// ---------- CARGAR LIBROS ----------
+
+async function cargar(categoria) {
+  [...$("#categorias").children].forEach((b) =>
+    b.classList.toggle("activo", b.textContent === categoria)
+  );
+  $("#catalogo").innerHTML = '<div class="loader"></div>';
+  $("#btnMore").style.display = "none";
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${CATEGORIAS[categoria]}&maxResults=${MAX_X_CAT}`;
+  const data = await (await fetch(url)).json();
+  // Filtramos por precio existente (no "Gratis")
+  allBooks = (data.items || [])
+    .map((item) => {
+      const usd = item.saleInfo?.listPrice?.amount || 0;
+      if (usd === 0) return null;
+      const ars = (usd * USD_TO_ARS).toFixed(0);
+      return {
+        tit: item.volumeInfo.title,
+        aut: item.volumeInfo.authors?.join(", ") || "Anónimo",
+        pre: `$${ars} ARS`,
+        img:
+          item.volumeInfo.imageLinks?.thumbnail ||
+          "https://via.placeholder.com/128x192?text=Sin+portada",
+      };
+    })
+    .filter(Boolean);
+  visibleCount = STEP;
+  renderBooks();
+  $("#btnMore").style.display = visibleCount < allBooks.length ? "block" : "none";
+}
+
+// ---------- INICIO ----------
+
+document.addEventListener("DOMContentLoaded", () => {
+  refreshUI();
+  const btnMore = document.createElement("button");
+  btnMore.id = "btnMore";
+  btnMore.textContent = "Mostrar más";
+  btnMore.style.display = "none";
+  btnMore.addEventListener("click", loadMore);
+  $("#catalogo").after(btnMore);
+});
+
+(async () => {
+  await getCotizacion();
+  const nav = $("#categorias");
+  Object.keys(CATEGORIAS).forEach((cat) => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.onclick = () => cargar(cat);
+    nav.appendChild(btn);
+  });
+  cargar("Ficción");
+})();

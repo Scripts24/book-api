@@ -1,0 +1,339 @@
+/* === RESET === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin    : 0;
+  padding   : 0;
+  border: none;
+  list-style: none;
+}
+
+body {
+  background : #1b033a;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  padding-top: 60px;
+}
+
+/* === HEADER FIJO === */
+header {
+  position       : fixed;
+  top            : 0;
+  left           : 0;
+  right          : 0;
+  height         : 60px;
+  background     : #c2099a;
+  display        : flex;
+  align-items    : center;
+  justify-content: space-between;
+  padding        : 0 1rem;
+  z-index        : 1000;
+}
+
+header .logo {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+/* Categorías desktop */
+#categorias {
+  display  : flex;
+  gap      : .5rem;
+  flex-wrap: wrap;
+}
+
+#categorias button {
+  padding      : .3rem .6rem;
+  border-radius: 4px;
+  background   : #fff;
+  cursor: pointer;
+}
+
+#categorias button.activo {
+  background: #1b033a;
+  color     : #fff;
+}
+
+/* Carrito a la derecha */
+#btnCarritoIcon {
+  position       : relative;
+  width          : 44px;
+  height         : 44px;
+  background     : #cc1094;
+  color          : #fff;
+  border-radius  : 50%;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+  font-size      : 1.3rem;
+}
+
+#carrito-cuenta {
+  position       : absolute;
+  top            : 0;
+  right          : 0;
+  background     : #1b033a;
+  color          : #fff;
+  font-size      : .7rem;
+  width          : 18px;
+  height         : 18px;
+  border-radius  : 50%;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+}
+
+/* Section cards */
+.section-cards {
+  display              : grid;
+  grid-template-columns: 280px 1fr;
+  gap                  : 1rem;
+  padding              : 1rem;
+}
+
+/* Loader */
+.loader {
+  width: 48px;
+  height: 48px;
+  margin: 2rem auto;
+  border: 5px solid #c2099a33;
+  border-top-color: #c2099a;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sidebar */
+#sidebar {
+  background    : #fff;
+  border-radius : 8px;
+  padding       : 1rem;
+  height        : fit-content;
+  display       : flex;
+  flex-direction: column;
+  gap           : .5rem;
+  border-right: 7px solid #c2099a;
+}
+
+#sidebar button{
+  padding      : .3rem .6rem;
+  border-radius: 4px;
+  background   : #c2099a;
+  color        : #fff;
+  cursor       : pointer;
+}
+
+#sidebar button:hover {
+  background: #ec4cc4;
+}
+
+/* Personalizar el input range (slider de precio) */
+#precioRange {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #c2099a33; /* fondo del track */
+  border-radius: 3px;
+  outline: none;
+}
+
+#precioRange::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #c2099a; /* color del thumb (el círculo) */
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#precioRange::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #c2099a;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+#catalogo {
+  display              : grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap                  : 1rem;
+}
+
+.libro {
+  background    : #fff;
+  border-radius : 15px;
+  overflow      : hidden;
+  display       : flex;
+  flex-direction: column;
+}
+
+.libro img {
+  aspect-ratio: 3/ 3;
+  padding:5px 10px 0 10px ;
+  border-radius: 20px;
+}
+
+.libro-info {
+  display       : flex;
+  flex-direction: column;
+  height        : 100%;
+  padding       : 0.5rem;
+}
+
+.libro h3 {
+  font-size: .9rem;
+}
+
+.libro p {
+  font-size: .8rem;
+  color    : #555;
+}
+
+.libro .precio {
+  font-weight: bold;
+}
+
+.libro button {
+  margin-top   : auto;
+  background   : #c2099a;
+  color        : #f7f5f5;
+  border-radius: 8px;
+  padding      : .4rem ;
+  cursor       : pointer;
+}
+
+.libro-actions {
+  display        : flex;
+  justify-content: space-between;
+  align-items    : center;
+  margin-top     : auto;
+}
+
+/* Botón Mostrar más debajo */
+#btnMore {
+  grid-column  : 1/-1;
+  justify-self : center;
+  margin-top   : 1rem;
+  padding      : .5rem 1rem;
+  background   : #c2099a;
+  color        : #fff;
+  border-radius: 8px;
+  display      : none;
+  cursor: pointer;
+}
+
+/* === MODALES === */
+dialog {
+  border-radius: 15px;
+  padding      : 1.5rem;
+  position  : fixed;
+  top       : 60px;
+  right     : 1rem;
+  left      : auto;
+  width     : 90%;
+  max-width : 320px;
+  margin    : 0;
+}
+
+dialog menu {
+  display        : flex;
+  gap            : .5rem;
+  justify-content: flex-end;
+  margin-top     : 1rem;
+}
+
+dialog button {
+  padding      : .4rem .8rem;
+  border-radius: 10px;
+  background   : #c2099a;
+  color        : #fff;
+  cursor       : pointer;
+  font-size: 0.8rem;
+}
+
+dialog button[value="confirm"],
+#btnFinalizarModal {
+  background:#1b033a;
+  color     : #fff;
+}
+
+#modalCarrito h2 {
+  font-size    : 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+#modalCarrito #carrito-lista {
+  font-size  : 0.9rem;
+  line-height: 1.4;
+  padding    : 0;
+  margin     : 0;
+}
+
+#modalCarrito #modalTotal {
+  font-size  : 1.1rem;
+  font-weight: bold;
+}
+
+#menuToggle {
+  display: none;
+}
+
+/**----MEDIA QUERIES---- */
+
+@media (max-width:768px) {
+  #categorias {
+    display: none;
+  }
+
+  #menuToggle {
+    display  : block;
+    z-index  : 1001;
+    font-size: 1.5rem;
+    order    : 2;
+  }
+
+  #btnCarritoIcon {
+    z-index: 1001;
+    order  : 1;
+  }
+
+  #categorias.open {
+    display       : flex;
+    flex-direction: column;
+    position      : fixed;
+    top           : 60px;
+    right         : 0;
+    left          : auto;
+    width         : 220px;
+    height        : calc(100vh - 60px);
+    background    : #fff;
+    padding       : 1rem;
+    z-index       : 1000;
+  }
+
+  .section-cards {
+    grid-template-columns: 1fr;
+  }
+
+  #catalogo {
+    display       : flex;
+    flex-direction: column;
+    align-items   : center;
+  }
+
+  .libro {
+    width    : 90%;
+    max-width: 300px;
+  }
+
+}
