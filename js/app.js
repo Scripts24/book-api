@@ -6,7 +6,7 @@ const CATEGORIAS = {
   Historia: "history",
 };
 
-const MAX_X_CAT = 40; // más libros
+const MAX_X_CAT = 40;
 const STEP = 4;
 const TIPO_CAMBIO = "blue";
 
@@ -14,7 +14,8 @@ const TIPO_CAMBIO = "blue";
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 let precioMax = 100000;
 let USD_TO_ARS = 1290;
-let allBooks = [];
+let allBooks = [];      // originales
+let displayedBooks = []; // los que se muestran después de filtrar
 let visibleCount = STEP;
 
 // ---------- UTILS ----------
@@ -46,15 +47,12 @@ function addCarrito(tit, pre) {
   carrito.push({ titulo: tit, precio: pre });
   refreshUI();
   guardar();
-
   Toastify({
     text: "¡Producto agregado al carrito!",
     duration: 3000,
     gravity: "top",
     position: "right",
-    style: {
-      background: "#0077ff",
-    },
+    style: { background: "#0077ff" },
   }).showToast();
 }
 
@@ -68,9 +66,7 @@ window.quitar = (idx) => {
     duration: 3000,
     gravity: "top",
     position: "right",
-    style: {
-      background: "#0077ff",
-    },
+    style: { background: "#0077ff" },
   }).showToast();
 };
 
@@ -84,14 +80,11 @@ $("#btnVaciarModal").addEventListener("click", () => {
     duration: 3000,
     gravity: "top",
     position: "right",
-    style: {
-      background: "#0077ff",
-    },
+    style: { background: "#0077ff" },
   }).showToast();
 });
 
 $("#btnFinalizarModal").addEventListener("click", () => {
-
   refreshUI();
   $("#modalPago").showModal();
   closeModal("#modalCarrito");
@@ -111,18 +104,15 @@ function vaciarCarrito() {
 const btnPagar = document.querySelector("#modalPago [value='confirm']");
 btnPagar.addEventListener("click", () => {
   Swal.fire({
-    icon: 'success',
-    title: '¡Compra Exitosa!',
-    text: 'En breve recibirá su pedido.',
+    icon: "success",
+    title: "¡Compra Exitosa!",
+    text: "En breve recibirá su pedido.",
     showConfirmButton: false,
-    timer: 2500
+    timer: 2500,
   });
-  // Después de mostrar el mensaje, vacía el carrito
   vaciarCarrito();
-  // Cierra los modales
   closeModal("#modalPago");
   closeModal("#modalCarrito");
-
 });
 
 ["#modalCarrito", "#modalPago"].forEach((id) => {
@@ -154,6 +144,20 @@ $("#btnCarritoIcon").addEventListener("click", openCarrito);
 // ---------- PAGINACIÓN ----------
 function renderBooks() {
   $("#catalogo").innerHTML = "";
+
+  // 2. Si no hay libros mostrar mensaje u ocultar
+  if (allBooks.length === 0) {
+    $("#catalogo").innerHTML = "";
+    $("#btnMore").style.display = "none";
+    Swal.fire({
+      icon: 'info',
+      title: 'Sin resultados',
+      text: 'No hay libros disponibles en este rango de precio.',
+      confirmButtonColor: '#c2099a'
+    });
+    return;
+  }
+
   allBooks.slice(0, visibleCount).forEach((lib) => {
     const card = document.createElement("article");
     card.className = "libro";
@@ -163,8 +167,8 @@ function renderBooks() {
         <h3>${lib.tit}</h3>
         <p>${lib.aut}</p>
         <div class="libro-actions">
-            <p class="precio">${lib.pre}</p>
-            <button onclick="addCarrito('${lib.tit}', '${lib.pre}')"><i class="ri-handbag-line"></i></button>
+          <p class="precio">${lib.pre}</p>
+          <button onclick="addCarrito('${lib.tit}', '${lib.pre}')"><i class="ri-handbag-line"></i></button>
         </div>
       </div>
     `;
@@ -181,14 +185,13 @@ function loadMore() {
 }
 
 // ---------- FILTRAR ----------
-
 $("#precioRange").addEventListener("input", (e) => {
   precioMax = Number(e.target.value) * 1000;
   $("#precioValor").textContent = `$${precioMax} ARS`;
   filtrar();
 });
 
-document.querySelectorAll("#sidebar button").forEach((btn) => {
+document.querySelectorAll("#sidebar button[data-max]").forEach((btn) => {
   btn.addEventListener("click", () => {
     precioMax = Number(btn.dataset.max) * 1000;
     $("#precioRange").value = precioMax / 1000;
@@ -198,46 +201,91 @@ document.querySelectorAll("#sidebar button").forEach((btn) => {
 });
 
 function filtrar() {
-  document.querySelectorAll(".libro").forEach((card) => {
-    const precio =
-      Number(card.querySelector(".precio").textContent.match(/\d+/)) || 0;
-    card.style.display = precio <= precioMax ? "" : "none";
+  // 1. Filtrar sobre todos los originales
+  displayedBooks = allBooks.filter(b =>
+    (Number(b.pre.match(/\d+/)) || 0) <= precioMax
+  );
+
+  // 2. Pintar solo los visibles
+  $("#catalogo").innerHTML = "";
+  displayedBooks.slice(0, visibleCount).forEach(lib => {
+    const card = document.createElement("article");
+    card.className = "libro";
+    card.innerHTML = `
+      <img src="${lib.img}" alt="${lib.tit}">
+      <div class="libro-info">
+        <h3>${lib.tit}</h3>
+        <p>${lib.aut}</p>
+        <div class="libro-actions">
+          <p class="precio">${lib.pre}</p>
+          <button onclick="addCarrito('${lib.tit}', '${lib.pre}')">
+            <i class="ri-handbag-line"></i>
+          </button>
+        </div>
+      </div>
+    `;
+    $("#catalogo").appendChild(card);
   });
+
+  // 3. Decidir botón
+  $("#btnMore").style.display =
+    visibleCount < displayedBooks.length ? "block" : "none";
+
+  // 4. Mensaje si no hay nada
+  if (displayedBooks.length === 0) {
+    $("#btnMore").style.display = "none";
+    Swal.fire({
+      icon: 'info',
+      title: 'Sin resultados',
+      text: 'No hay libros en este rango.',
+      confirmButtonColor: '#c2099a'
+    });
+  }
 }
 
 // ---------- CARGAR LIBROS ----------
-
 async function cargar(categoria) {
-  [...$("#categorias").children].forEach((b) =>
+  // botón off antes de empezar
+  const btnMore = $("#btnMore");
+  if (btnMore) btnMore.style.display = "none";
+
+  // marca activa
+  [...$("#categoriasSidebar").children].forEach(b =>
     b.classList.toggle("activo", b.textContent === categoria)
   );
+
+  // loader
   $("#catalogo").innerHTML = '<div class="loader"></div>';
-  $("#btnMore").style.display = "none";
+
+  // petición
   const url = `https://www.googleapis.com/books/v1/volumes?q=${CATEGORIAS[categoria]}&maxResults=${MAX_X_CAT}`;
   const data = await (await fetch(url)).json();
-  // Filtramos por precio existente (no "Gratis")
+
+  // guardar originales
   allBooks = (data.items || [])
-    .map((item) => {
-      const usd = item.saleInfo?.listPrice?.amount || 0;
+    .map(item => {
+      const usd = item.saleInfo?.listPrice?.amount ?? 0;
       if (usd === 0) return null;
       const ars = (usd * USD_TO_ARS).toFixed(0);
       return {
         tit: item.volumeInfo.title,
         aut: item.volumeInfo.authors?.join(", ") || "Anónimo",
         pre: `$${ars} ARS`,
-        img:
-          item.volumeInfo.imageLinks?.thumbnail ||
-          "https://via.placeholder.com/128x192?text=Sin+portada",
+        img: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/128x192?text=Sin+portada",
       };
     })
     .filter(Boolean);
+
+  // reiniciar contadores y filtrar/pintar
+  displayedBooks = [...allBooks];
   visibleCount = STEP;
-  renderBooks();
-  $("#btnMore").style.display = visibleCount < allBooks.length ? "block" : "none";
+  precioMax = 100000;           // reseteamos rango
+  $("#precioRange").value = 100;
+  $("#precioValor").textContent = "$100.000 ARS";
+  filtrar();
 }
 
 // ---------- INICIO ----------
-
 document.addEventListener("DOMContentLoaded", () => {
   refreshUI();
   const btnMore = document.createElement("button");
@@ -250,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 (async () => {
   await getCotizacion();
-  const nav = $("#categorias");
+  const nav = $("#categoriasSidebar");
   Object.keys(CATEGORIAS).forEach((cat) => {
     const btn = document.createElement("button");
     btn.textContent = cat;
