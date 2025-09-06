@@ -1,35 +1,33 @@
-// ---------- MENU RESPONSIVE ----------
-(function () {
-    const nav = document.getElementById('categorias');
-    const carritoBtn = document.getElementById('btnCarritoIcon');
 
-    // Crea botón hamburguesa
-    const toggleBtn = document.createElement('button');
-    toggleBtn.id = 'menuToggle';
-    toggleBtn.innerHTML = '<i class="ri-menu-line"></i>';
-    toggleBtn.setAttribute('aria-label', 'Menú');
-    nav.parentNode.insertBefore(toggleBtn, nav);
+/* navbar toggle */
+const navbar     = document.querySelector('[data-navbar]');
+const openBtn    = document.querySelector('.nav-open-btn');
+const closeBtn   = document.querySelector('.nav-close-btn');
+const overlay    = document.querySelector('[data-overlay]');
 
-    // Crea overlay para cerrar al tocar fuera
-    const overlay = document.createElement('div');
-    overlay.id = 'overlay';
-    document.body.appendChild(overlay);
+const closeNavbar = () => {
+  navbar.classList.remove('active');
+  overlay.classList.remove('active');
+};
 
-    // Función para abrir/cerrar menú
-    function toggleMenu() {
-        nav.classList.toggle('open');
-        overlay.classList.toggle('open');
-    }
+const openNavbar = () => {
+  navbar.classList.add('active');
+  overlay.classList.add('active');
+};
 
-    // Eventos
-    toggleBtn.addEventListener('click', toggleMenu);
-    overlay.addEventListener('click', toggleMenu);
+openBtn.addEventListener('click', openNavbar);
+closeBtn.addEventListener('click', closeNavbar);
+overlay.addEventListener('click', closeNavbar);
 
-    // Cerrar al elegir categoría
-    nav.addEventListener('click', (e) => {
-        if (e.target.tagName === 'BUTTON') toggleMenu();
-    });
+/* header cambia de color cuando se hace scroll */
+const header = document.querySelector('[data-header]');
 
-    // Botón carrito fuera del menú (siempre visible)
-    carritoBtn.style.zIndex = '9999';
-})();
+window.addEventListener('scroll', () => {
+  const current = window.pageYOffset;
+
+  if (current > 0) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
+  }
+});

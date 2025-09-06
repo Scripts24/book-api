@@ -52,7 +52,10 @@ function addCarrito(tit, pre) {
     duration: 3000,
     gravity: "top",
     position: "right",
-    style: { background: "#0077ff" },
+    style: {
+      background: "#66c5cc",
+      marginRight: "60px",
+    },
   }).showToast();
 }
 
@@ -66,7 +69,10 @@ window.quitar = (idx) => {
     duration: 3000,
     gravity: "top",
     position: "right",
-    style: { background: "#0077ff" },
+    style: {
+      background: "#66c5cc",
+      marginRight: "60px",
+    },
   }).showToast();
 };
 
@@ -80,7 +86,10 @@ $("#btnVaciarModal").addEventListener("click", () => {
     duration: 3000,
     gravity: "top",
     position: "right",
-    style: { background: "#0077ff" },
+    style: {
+      background: "#66c5cc",
+      marginRight: "60px",
+    },
   }).showToast();
 });
 
@@ -107,8 +116,9 @@ btnPagar.addEventListener("click", () => {
     icon: "success",
     title: "¡Compra Exitosa!",
     text: "En breve recibirá su pedido.",
+    timerProgressBar: true,
     showConfirmButton: false,
-    timer: 2500,
+    timer: 3500,
   });
   vaciarCarrito();
   closeModal("#modalPago");
@@ -150,10 +160,12 @@ function renderBooks() {
     $("#catalogo").innerHTML = "";
     $("#btnMore").style.display = "none";
     Swal.fire({
-      icon: 'info',
+      icon: 'error',
       title: 'Sin resultados',
       text: 'No hay libros disponibles en este rango de precio.',
-      confirmButtonColor: '#c2099a'
+      timerProgressBar: true,
+      showConfirmButton: false,
+      timer: 3500,
     });
     return;
   }
@@ -235,10 +247,12 @@ function filtrar() {
   if (displayedBooks.length === 0) {
     $("#btnMore").style.display = "none";
     Swal.fire({
-      icon: 'info',
+      icon: 'error',
       title: 'Sin resultados',
       text: 'No hay libros en este rango.',
-      confirmButtonColor: '#c2099a'
+      timer: 3500,
+      timerProgressBar: true,
+      showConfirmButton: false
     });
   }
 }
