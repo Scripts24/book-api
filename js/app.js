@@ -297,6 +297,7 @@ async function cargar(categoria) {
   $("#precioRange").value = 100;
   $("#precioValor").textContent = "$100.000 ARS";
   filtrar();
+  renderPopulares();
 }
 
 // ---------- INICIO ----------
@@ -321,3 +322,38 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   cargar("Ficción");
 })();
+
+
+// ----------SLIDER SECCIÓN ÉXITOS (bestsellers) ----------
+function renderPopulares() {
+  // 1. Ordenar por rating (o por cantidad de ratings)
+  const populares = [...allBooks]
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 8);                         // 8 libros
+
+  const slider = $("#popularSlider");
+  slider.innerHTML = "";                // limpiamos
+
+  populares.forEach(lib => {
+    const slide = document.createElement("div");
+    slide.className = "popular-slide";
+    slide.innerHTML = `
+    <article class="libro">
+      <img src="${lib.img}" alt="${lib.tit}">
+      <div class="libro-info">
+        <h3>${lib.tit}</h3>
+        <p>${lib.aut}</p>
+        <div class="libro-actions">
+          <p class="precio">${lib.pre}</p>
+          <button onclick="addCarrito('${lib.tit}', '${lib.pre}')">
+            <i class="ri-handbag-line"></i>
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+    slider.appendChild(slide);
+  });
+}
+
+

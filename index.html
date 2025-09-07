@@ -175,6 +175,7 @@
     </section>
     <!-- Fin Sección Catálogo -->
 
+    <!-- Inicio Modales -->
     <!-- Modal del carrito -->
     <dialog id="modalCarrito">
       <h2>Tu carrito</h2>
@@ -194,7 +195,8 @@
         <p>Total a pagar: <strong id="modalPagoTotal">$0 </strong></p>
         <label>
           Nombre en la tarjeta:
-          <input type="text" required placeholder="Ada Lovelace" />
+          <input type="text" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+          required placeholder="Ada Lovelace" />
         </label>
         <label>
           Número de tarjeta:
@@ -206,7 +208,20 @@
         </menu>
       </form>
     </dialog>
+    <!-- Fin Modales -->
+
+    <!-- Inicio Sección Éxitos -->
+    <section id="bestsellers" class="section popular" aria-label="populares">
+      <div class="container">
+        <h2 class="h2 section-title section">Más leídos</h2>
+
+        <!-- Slider -->
+        <div class="popular-slider" id="popularSlider">
+          <!-- se llena con JS -->
+        </div>
+      </div>
     </section>
+    <!-- Fin Sección Éxitos -->
 
     <!-- Ir al top -->
     <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
