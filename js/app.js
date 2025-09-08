@@ -111,7 +111,15 @@ function vaciarCarrito() {
 }
 
 const btnPagar = document.querySelector("#modalPago [value='confirm']");
-btnPagar.addEventListener("click", () => {
+
+btnPagar.addEventListener("click", (e) => {
+  const form = btnPagar.closest("form");   // agarramos el form
+  if (!form.checkValidity()) {             // ¿NO pasa validación?
+    form.reportValidity();                 // mostramos tooltip nativo
+    return;                                // ❌ no seguimos
+  }
+
+  // ✅ todo OK
   Swal.fire({
     icon: "success",
     title: "¡Compra Exitosa!",

@@ -928,6 +928,98 @@ dialog button[value="confirm"],
   margin-bottom: 5px;
 }
 
+/**----FOOTER---- */
+
+.footer {
+  border-block-start: 1px solid var(--white_10);
+  padding-block     : 50px 20px;
+}
+
+.grid-footer {
+  display              : grid;
+  grid-template-columns: 1fr 1fr;
+  gap                  : 40px;
+  max-width            : 1200px;
+  margin-inline        : auto;
+  padding-inline       : 15px;
+}
+
+.footer-brand .logo {
+  margin-block-end: 15px;
+}
+
+.footer-text {
+  margin-block: 15px 30px;
+  max-width   : 35ch;
+}
+
+.social-list {
+  display: flex;
+  gap    : 20px;
+}
+
+.social-list a {
+  font-size : 24px;
+  transition: color var(--transition-1);
+}
+
+.social-list a:is(:hover, :focus) {
+  color: var(--maximum-blue-green);
+}
+
+/* Columna 2 – newsletter */
+.footer-news {
+  display       : flex;
+  flex-direction: column;
+  gap           : 15px;
+}
+
+.footer-news .h4 {
+  font-size       : var(--fs-5);
+  margin-block-end: 10px;
+}
+
+.news-form {
+  display: flex;
+  gap    : 10px;
+}
+
+.news-form input {
+  flex          : 1;
+  height        : 50px;
+  padding-inline: 15px;
+  border        : 1px solid var(--white_10);
+  border-radius : var(--radius-pill);
+  font-size     : var(--fs-6);
+}
+
+.news-form .btn {
+  padding-inline: 30px;
+}
+
+.news-hint {
+  font-size: var(--fs-8);
+  color    : var(--spanish-gray);
+}
+
+.payment-img {
+  margin-block-start: 10px;
+  margin-bottom: 15px;
+}
+
+/* Línea inferior */
+.footer-bottom {
+  text-align         : center;
+  padding-block-start: 20px;
+  border-block-start : 1px solid var(--white_10);
+}
+
+.copyright {
+  font-size: var(--fs-6);
+  color    : var(--spanish-gray);
+}
+
+
 
 /**----MEDIA QUERIES---- */
 
@@ -1021,8 +1113,6 @@ dialog button[value="confirm"],
     flex: 0 0 240px;
   }
 
-  /* 3 visibles */
-
 }
 
 @media (max-width: 768px) {
@@ -1057,6 +1147,14 @@ dialog button[value="confirm"],
   .libro {
     width    : 90%;
     max-width: 300px;
+  }
+
+  .grid-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .news-form {
+    justify-content: center;
   }
 
 }

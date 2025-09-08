@@ -195,8 +195,7 @@
         <p>Total a pagar: <strong id="modalPagoTotal">$0 </strong></p>
         <label>
           Nombre en la tarjeta:
-          <input type="text" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
-          required placeholder="Ada Lovelace" />
+          <input type="text" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" required placeholder="Ada Lovelace" />
         </label>
         <label>
           Número de tarjeta:
@@ -230,6 +229,49 @@
 
   </main>
   <!-- Fin Contenido principal -->
+  <!-- Inicio Footer -->
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container grid-footer">
+
+      <!-- Columna 1 – logo + redes -->
+      <div class="footer-brand">
+        <a href="#home" class="logo">
+          <img src="img/logo.png" width="60" height="20" alt="FreeBookStore">
+          <span>FreeBookStore</span>
+        </a>
+        <p class="footer-text">
+          Cada libro es una puerta a nuevas aventuras, conocimientos y emociones.
+        </p>
+        <ul class="social-list">
+          <li><a href="#" aria-label="Facebook"><ion-icon name="logo-facebook"></ion-icon></a></li>
+          <li><a href="#" aria-label="Twitter"><ion-icon name="logo-twitter"></ion-icon></a></li>
+          <li><a href="#" aria-label="Instagram"><ion-icon name="logo-instagram"></ion-icon></a></li>
+          <li><a href="#" aria-label="Whatsapp"><ion-icon name="logo-whatsapp"></ion-icon></a></li>
+        </ul>
+      </div>
+
+      <!-- Columna 2 – newsletter + medios de pago -->
+      <div class="footer-news">
+        <h4 class="h4">Suscribite a nuestra newsletter</h4>
+        <form class="news-form" id="newsForm">
+          <input type="email" placeholder="Tu e-mail" required>
+          <button type="submit" class="btn btn-primary">Suscribirme</button>
+        </form>
+        <p class="news-hint">Sin spam, prometido.</p>
+
+        <!-- Imagen de tarjetas -->
+        <img src="img/payment.png" width="280" height="30" alt="Medios de pago" class="payment-img">
+      </div>
+
+    </div>
+
+    <!-- Línea inferior -->
+    <div class="footer-bottom">
+      <p class="copyright">Realizado por Patricia Atanasoff &copy; 2025</p>
+    </div>
+  </footer>
+
   <!--Íconos de Ionicon-->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
@@ -245,6 +287,8 @@
   <script src="js/marqueeText.js"></script>
   <!--Ir al top-->
   <script src="js/top.js"></script>
+  <!--Newsletter-->
+  <script src="js/news.js"></script>
 </body>
 
 </html>
