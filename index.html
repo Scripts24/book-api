@@ -39,12 +39,23 @@
       </nav>
       <!-- Carrito + Hamburguesa -->
       <div class="header-actions">
+        <button class="header-action-btn" id="btnSearch" aria-label="buscar">
+          <ion-icon name="search-outline"></ion-icon>
+        </button>
         <button class="header-action-btn" id="btnCarritoIcon" aria-label="cart" title="Cart">
           <span class="span" id="carrito-cuenta">0</span>
           <ion-icon name="bag-handle-outline"></ion-icon>
         </button>
         <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
           <ion-icon name="menu-outline"></ion-icon>
+        </button>
+      </div>
+
+      <!-- input desplegable (oculto por defecto) -->
+      <div class="search-bar" id="searchBar">
+        <input type="text" id="searchInput" placeholder="Buscar libros..." autocomplete="off">
+        <button id="btnCloseSearch" aria-label="cerrar búsqueda">
+          <ion-icon name="close-outline"></ion-icon>
         </button>
       </div>
     </div>
@@ -212,7 +223,7 @@
     <!-- Inicio Sección Éxitos -->
     <section id="bestsellers" class="section popular" aria-label="populares">
       <div class="container">
-        <h2 class="h2 section-title section">Más leídos</h2>
+        <h2 class="h2 section-title section">Éxitos</h2>
 
         <!-- Slider -->
         <div class="popular-slider" id="popularSlider">
@@ -226,6 +237,9 @@
     <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
       <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
     </a>
+
+    <!-- Modal de búsqueda -->
+    <dialog id="modalSearch"></dialog>
 
   </main>
   <!-- Fin Contenido principal -->
@@ -289,6 +303,8 @@
   <script src="js/top.js"></script>
   <!--Newsletter-->
   <script src="js/news.js"></script>
+  <!--Búsqueda-->
+  <script src="js/search.js"></script>
 </body>
 
 </html>
