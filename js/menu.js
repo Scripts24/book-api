@@ -31,3 +31,25 @@ window.addEventListener('scroll', () => {
     header.classList.remove('scrolled');
   }
 });
+
+/* ---------- SCROLL SPY ---------- */
+const spyLinks = document.querySelectorAll('[data-scroll-spy]');
+const sections = Array.from(spyLinks).map(link =>
+  document.querySelector(link.getAttribute('href'))
+);
+
+const observer = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      spyLinks.forEach(link => link.classList.remove('active'));
+      const active = document.querySelector(
+        `[data-scroll-spy][href="#${entry.target.id}"]`
+      );
+      if (active) active.classList.add('active');
+    });
+  },
+  { rootMargin: '-40% 0px -60% 0px' } //centro del viewport
+);
+
+sections.forEach(sec => observer.observe(sec));
