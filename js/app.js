@@ -193,6 +193,8 @@ function renderBooks() {
       </div>
     `;
     $("#catalogo").appendChild(card);
+
+    
   });
   $("#btnMore").style.display =
     visibleCount >= allBooks.length ? "none" : "block";
@@ -231,8 +233,9 @@ function filtrar() {
   displayedBooks.slice(0, visibleCount).forEach(lib => {
     const card = document.createElement("article");
     card.className = "libro";
+     // lazy load
     card.innerHTML = `
-      <img src="${lib.img}" alt="${lib.tit}">
+    <img data-src="${lib.img}" alt="${lib.tit}" loading="lazy" class="lazy">
       <div class="libro-info">
         <h3>${lib.tit}</h3>
         <p>${lib.aut}</p>
@@ -245,6 +248,10 @@ function filtrar() {
       </div>
     `;
     $("#catalogo").appendChild(card);
+
+    //  observamos la imagen apenas la creamos
+  const img = card.querySelector('img.lazy');
+  imageObserver.observe(img);
   });
 
   // 3. Decidir botón
@@ -363,5 +370,20 @@ function renderPopulares() {
     slider.appendChild(slide);
   });
 }
+
+// ---------- LAZY LOAD (refuerzo) ----------
+const imageObserver = new IntersectionObserver((entries, obs) => {
+  entries.forEach(ent => {
+    if (ent.isIntersecting) {
+      const img = ent.target;
+      img.src = img.dataset.src;      // data-src → src
+      img.classList.add('loaded');    // fade-in suave
+      obs.unobserve(img);             // dejamos de observar
+    }
+  });
+}, { rootMargin: '50px' });          // empieza 50px antes
+
+
+
 
 

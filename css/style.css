@@ -652,6 +652,9 @@ body {
 
 /** === SECCIÓN CATÁLOGO === */
 
+/* lazy load fade-in */
+
+
 #books {
   scroll-margin-top: 100px;
 }
@@ -844,6 +847,14 @@ body {
 
 #btnMore:hover {
   background: var(--blue-green-hover);
+}
+
+.lazy {
+  opacity: 0;
+  transition: opacity .3s;
+}
+.lazy.loaded {
+  opacity: 1;
 }
 
 /* === MODALES === */
