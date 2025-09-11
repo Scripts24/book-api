@@ -200,19 +200,36 @@
     <!-- Modal de pago -->
     <dialog id="modalPago">
       <h2>Pago simulado</h2>
-      <form method="dialog">
+      <form id="paymentForm" method="dialog" novalidate>
         <p>Total a pagar: <strong id="modalPagoTotal">$0 </strong></p>
+
         <label>
           Nombre en la tarjeta:
-          <input type="text" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$" required placeholder="Ada Lovelace" />
+          <input type="text" id="cardName" required placeholder="Ada Lovelace" />
+          <span class="tooltip"></span>
         </label>
+
         <label>
           Número de tarjeta:
-          <input type="text" pattern="\d{16}" required placeholder="1234567812345678" />
+          <input type="text" id="cardNumber" maxlength="16" required placeholder="1234567812345678" />
+          <span class="tooltip"></span>
         </label>
+
+        <label>
+          Fecha de vencimiento:
+          <input type="date" id="cardDate" required />
+          <span class="tooltip"></span>
+        </label>
+
+        <label>
+          CVV:
+          <input type="text" id="cardCVV" maxlength="4" required placeholder="123" />
+          <span class="tooltip"></span>
+        </label>
+
         <menu>
           <button value="cancel">Cancelar</button>
-          <button value="confirm">Pagar</button>
+          <button value="confirm" id="payBtn">Pagar</button>
         </menu>
       </form>
     </dialog>
@@ -303,6 +320,7 @@
   <script src="js/news.js"></script>
   <!--Búsqueda-->
   <script src="js/search.js"></script>
+
 </body>
 
 </html>

@@ -113,13 +113,12 @@ function vaciarCarrito() {
 const btnPagar = document.querySelector("#modalPago [value='confirm']");
 
 btnPagar.addEventListener("click", (e) => {
-  const form = btnPagar.closest("form");   // agarramos el form
-  if (!form.checkValidity()) {             // ¿NO pasa validación?
-    form.reportValidity();                 // mostramos tooltip nativo
-    return;                                // ❌ no seguimos
-  }
+  e.preventDefault(); // prevenimos cierre automático del <form method="dialog">
 
-  // ✅ todo OK
+  // Si el botón está deshabilitado, no seguimos
+  if (btnPagar.disabled) return;
+
+  // ✅ Todo OK → mostrar alerta de éxito
   Swal.fire({
     icon: "success",
     title: "¡Compra Exitosa!",
@@ -128,10 +127,98 @@ btnPagar.addEventListener("click", (e) => {
     showConfirmButton: false,
     timer: 3500,
   });
+
+  // Vaciar carrito
   vaciarCarrito();
+
+  // Resetear formulario y validaciones
+  const form = btnPagar.closest("form");
+  form.reset();
+  form.querySelectorAll("input").forEach(inp => {
+    inp.classList.remove("valid", "invalid");
+    const tip = inp.parentElement.querySelector(".tooltip");
+    if (tip) tip.textContent = "";
+  });
+
+  // Forzar revalidación inicial (desactiva el botón hasta que se rellene de nuevo)
+  if (typeof validatePaymentForm === "function") {
+    validatePaymentForm();
+  }
+
+  // Cerrar modales
   closeModal("#modalPago");
   closeModal("#modalCarrito");
 });
+
+// ---------- VALIDACIÓN FORM PAGO EN TIEMPO REAL ----------
+const paymentForm = document.querySelector("#paymentForm");
+if (paymentForm) {
+  const payBtn = paymentForm.querySelector("[value='confirm']");
+
+  paymentForm.addEventListener("input", validatePaymentForm);
+
+  function validatePaymentForm() {
+    let valid = true;
+
+    // Nombre
+    const name = paymentForm.querySelector("#cardName");
+    if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(name.value)) {
+      showError(name, "Solo letras y espacios.");
+      valid = false;
+    } else clearError(name);
+
+    // Número de tarjeta
+    const number = paymentForm.querySelector("#cardNumber");
+    if (!/^\d{16}$/.test(number.value)) {
+      showError(number, "Debe tener 16 dígitos.");
+      valid = false;
+    } else clearError(number);
+
+    // Fecha FUTURA (día, mes y año)
+    const date = paymentForm.querySelector("#cardDate");
+    if (date.value) {
+      const selected = new Date(date.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // normalizamos a medianoche
+
+      if (selected < today) {
+        showError(date, "La tarjeta está vencida.");
+        valid = false;
+      } else {
+        clearError(date);
+      }
+    } else {
+      showError(date, "Seleccione una fecha.");
+      valid = false;
+    }
+
+    // CVV
+    const cvv = paymentForm.querySelector("#cardCVV");
+    if (!/^\d{3,4}$/.test(cvv.value)) {
+      showError(cvv, "Debe tener 3 o 4 dígitos.");
+      valid = false;
+    } else clearError(cvv);
+
+    payBtn.disabled = !valid;
+  }
+
+  function showError(input, msg) {
+    input.classList.add("invalid");
+    input.classList.remove("valid");
+    let tip = input.parentElement.querySelector(".tooltip");
+    if (tip) tip.textContent = msg;
+  }
+
+  function clearError(input) {
+    input.classList.remove("invalid");
+    input.classList.add("valid");
+    let tip = input.parentElement.querySelector(".tooltip");
+    if (tip) tip.textContent = "";
+  }
+
+  // Inicializar
+  validatePaymentForm();
+}
 
 ["#modalCarrito", "#modalPago"].forEach((id) => {
   const btn = id === "#modalCarrito" ? "#btnCerrarCarrito" : "[value='cancel']";
@@ -382,7 +469,6 @@ const imageObserver = new IntersectionObserver((entries, obs) => {
     }
   });
 }, { rootMargin: '50px' });          // empieza 50px antes
-
 
 
 
